@@ -69,20 +69,18 @@ PythonInterpreter::PythonInterpreter(fs::path exePath, std::vector<fs::path> ext
     PyStatusExitOnError(status);
     
     // Add external Python module search paths
-    std::basic_stringstream<fs::path::value_type> pyPath;
+    std::stringstream pyPath;
     // Different delimiters depending on OS
     // https://docs.python.org/3/c-api/init_config.html#c.PyConfig.pythonpath_env
 #ifdef _WIN32
-    const auto delim = L";";
+    const auto delim = ";";
 #else
     const auto delim = ":";
 #endif
-    if (!externalSearchPaths.empty()) {
-        for (const auto& path : externalSearchPaths) {
-            pyPath << path.string() << delim;
-        }
-        status = setPyConfigString(&config, &config.pythonpath_env, pyPath.str().c_str());
+    for (const auto& path : externalSearchPaths) {
+        pyPath << path.string() << delim;
     }
+    status = setPyConfigString(&config, &config.pythonpath_env, pyPath.str().c_str());
 
     PyStatusExitOnError(status);
 
