@@ -4,7 +4,7 @@ set(SOURCE_FILES
     main.cpp
 )
 # Create application
-add_executable(${PROJECT_NAME} MACOSX_BUNDLE WIN32 
+add_executable(${PROJECT_NAME} MACOSX_BUNDLE 
     ${SOURCE_FILES} 
 )
 target_link_libraries(${PROJECT_NAME} PUBLIC 
