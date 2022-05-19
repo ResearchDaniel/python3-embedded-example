@@ -27,14 +27,14 @@ jobs:
             cmake: '--preset ninja-vcpkg '
             targets: 'all package'
             installer: 'installer-macos'
-            artifact: 'build/python3-*.tar.gz'
+            artifact: 'build/python3-*.zip'
           - os: 'ubuntu-20.04'
             triplet: 'x64-linux'
             mono: 'mono'
             cmake: '--preset ninja-vcpkg' 
             targets: 'all package'
             installer: 'installer-ubuntu'
-            artifact: 'build/python3-v*.tar.gz'
+            artifact: 'build/python3-*.zip'
       fail-fast: false
       
     runs-on: ${{ matrix.os }}

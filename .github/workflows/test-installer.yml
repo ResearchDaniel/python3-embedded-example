@@ -16,15 +16,12 @@ jobs:
         include:
           - os: 'windows-latest'
             installer: 'installer-win'
-            extension: '.zip'
             exe: 'bin/${{ github.event.repository.name }}'
           - os: 'macos-latest'
             installer: 'installer-macos'
-            extension: '.tar.gz'
             exe: '${{ github.event.repository.name }}.app/Contents/MacOS/${{ github.event.repository.name }}'
           - os: 'ubuntu-20.04'
             installer: 'installer-linux'
-            extension: '.tar.gz'
             exe: 'bin/${{ github.event.repository.name }}'
     runs-on: ${{ matrix.os }}
     steps:
@@ -38,9 +35,9 @@ jobs:
       shell: bash
       run: |
         # Find the name of the installer 
-        TGZ=$(ls ${{ github.event.repository.name }}-*${{ matrix.extension }})
+        ZIP=$(ls ${{ github.event.repository.name }}-*.zip)
         # Extract
-        tar zxvf "$TGZ"
+        tar zxvf "$ZIP"
         # Get folder name and move into the folder 
-        cd "${TGZ%${{ matrix.extension }}}"
+        cd "${ZIP%$.zip}"
         ./${{ matrix.exe }} 

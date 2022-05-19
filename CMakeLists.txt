@@ -65,4 +65,5 @@ add_subdirectory(python3interpeter)
 add_subdirectory(app)
 
 # Setup installer packaging
+set(CPACK_GENERATOR "ZIP")
 include(CPack)
