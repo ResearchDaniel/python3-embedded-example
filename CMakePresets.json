@@ -1,0 +1,34 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": { "major": 3, "minor": 19, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "vcpkg",
+      "hidden": true,
+      "toolchainFile": "vcpkg/scripts/buildsystems/vcpkg.cmake",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE" : "vcpkg/scripts/buildsystems/vcpkg.cmake"
+      }
+    },
+    {
+      "name": "msvc-dev-vcpkg",
+      "displayName": "MSVC 2022 VCPKG ",
+      "description": "MSVC Development VCPKG configuration",
+      "inherits": ["vcpkg"]
+    },
+    {
+      "name": "ninja-vcpkg",
+      "displayName": " Ninja VCPKG",
+      "description": "Ninja development using vcpkg configuration",
+      "generator": "Ninja",
+      "inherits": ["vcpkg"]
+    },
+    {
+      "name": "xcode-vcpkg",
+      "displayName": " XCode",
+      "description": "XCode development configuration",
+      "generator": "Xcode",
+      "inherits": ["vcpkg"]
+    }  
+  ]
+}

@@ -1,0 +1,98 @@
+name: Build
+
+on: 
+  push:
+  workflow_dispatch:
+
+env:
+  BUILD_TYPE: Release
+  VCPKG_BINARY_SOURCES: 'clear;nuget,GitHub,readwrite' # For vcpkg nuget caching 
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-20.04]
+        include:
+          - os: 'windows-latest'
+            triplet: 'x64-windows'
+            mono: ''
+            cmake: '--preset msvc-vcpkg'
+            targets: 'ALL_BUILD package'
+            installer: 'installer-win'
+            artifact: 'build/python-*.exe'
+          - os: 'macos-latest'
+            triplet: 'x64-osx'
+            mono: 'mono'
+            cmake: '--preset ninja-vcpkg '
+            targets: 'all package'
+            installer: 'installer-macos'
+            artifact: 'build/python-*.dmg'
+          - os: 'ubuntu-20.04'
+            triplet: 'x64-linux'
+            mono: 'mono'
+            cmake: '--preset ninja-vcpkg' 
+            targets: 'all package'
+            installer: 'installer-ubuntu'
+            artifact: 'build/python-v*.deb'
+      fail-fast: false
+      
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 360
+    
+    steps:
+    # Cache built dependencies for faster subsequent builds
+    - name: 'Setup NuGet Credentials'
+      shell: bash
+      run: |
+        ${{ matrix.mono }} `vcpkg fetch nuget | tail -n 1` \
+        sources add \
+        -source "https://nuget.pkg.github.com/${{ github.event.repository.name }}/index.json" \
+        -storepasswordincleartext \
+        -name "GitHub" \
+        -username "${{ github.event.repository.name }}" \
+        -password "${{ secrets.GITHUB_TOKEN }}" 
+        ${{ matrix.mono }} `vcpkg fetch nuget | tail -n 1` \
+        setapikey "${{ secrets.GITHUB_TOKEN }}" \
+        -source "https://nuget.pkg.github.com/${{ github.event.repository.name }}/index.json"
+
+    - name: Apt Install
+      shell: bash
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt install ninja-build 
+  
+    - name: Brew Install
+      shell: bash
+      if: runner.os == 'macOS'
+      run: |
+        brew install ninja 
+    
+    - name: Clone repository
+      uses: actions/checkout@v2
+      with: 
+        submodules: recursive
+        
+    - name: Configure CMake
+      shell: bash
+      run: >
+        cmake -B build
+        -DVCPKG_TARGET_TRIPLET='${{ matrix.triplet }}'
+        -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+        ${{ matrix.cmake }}
+
+    - name: Setup C++ Log matchers
+      uses: Trass3r/setup-cpp@v1
+
+    - name: Build
+      timeout-minutes: 360
+      shell: bash
+      run: cmake --build build --config ${{ env.BUILD_TYPE }} --parallel --target ${{ matrix.targets }}
+
+    - name: Upload installer
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ matrix.installer }}
+        path: ${{ matrix.artifact }}
+
+

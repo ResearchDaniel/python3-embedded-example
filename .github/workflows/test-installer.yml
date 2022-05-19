@@ -1,0 +1,46 @@
+name: Test Installer
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: [Build]
+    types: 
+      - completed
+
+jobs:
+  test-installer:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-20.04]
+        include:
+          - os: 'windows-latest'
+            installer: 'installer-win'
+            extension: '.zip'
+            exe: 'bin/${{ github.event.repository.name }}'
+          - os: 'macos-latest'
+            installer: 'installer-macos'
+            extension: '.tar.gz'
+            exe: '${{ github.event.repository.name }}.app/Contents/MacOS/${{ github.event.repository.name }}'
+          - os: 'ubuntu-20.04'
+            installer: 'installer-linux'
+            extension: '.tar.gz'
+            exe: 'bin/${{ github.event.repository.name }}'
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Download artifact
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        name: ${{ matrix.installer }}
+        workflow: build.yml
+
+    - name: Extract and run 
+      shell: bash
+      run: |
+        # Find the name of the installer 
+        TGZ=$(ls ${{ github.event.repository.name }}-*${{ matrix.extension }})
+        # Extract
+        tar zxvf "$TGZ"
+        # Get folder name and move into the folder 
+        cd "${TGZ%${{ matrix.extension }}}"
+        ./${{ matrix.exe }} 

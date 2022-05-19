@@ -1,0 +1,11 @@
+{
+    "name": "python-cmake",
+    "version-string" : "1.0.0",
+    "homepage" : "https://github.com/researchdaniel/python-cmake",
+    "license": "BSD-2-Clause",
+    "dependencies" : [
+        "python3",
+        "pybind11"
+    ]
+}   
+
