@@ -6,12 +6,22 @@
 #include <pybind11/embed.h>
 namespace py = pybind11;
 
+// Internal functions to handle differences in std::filesystem::path.
+// The path uses wchar_t on Windows and char on other platforms.
+// Use function overloading to provide cross-platform string assignments
+PyStatus setPyConfigString(PyConfig* config, wchar_t **config_str, const char* val) {
+    return PyConfig_SetBytesString(config, config_str, val);
+}
+PyStatus setPyConfigString(PyConfig* config, wchar_t **config_str, const wchar_t* val) {
+    return PyConfig_SetString(config, config_str, val);
+}
+
 static void PyStatusExitOnError(PyStatus status)
 {
   if (PyStatus_Exception(status))
   {
     std::cerr << "Internal error initializing Python!";
-    /* This calls `exit`. */
+    // This calls `exit`.
     Py_ExitStatusException(status);
   }
 }
@@ -46,8 +56,7 @@ PythonInterpreter::PythonInterpreter(fs::path exePath, std::vector<fs::path> ext
     std::stringstream pyVer;
     pyVer << "python" << PYTHON_VERSION_MAJOR << "." << PYTHON_VERSION_MINOR;
     auto pythonExe = pythonDir / "bin" / fs::path(pyVer.str());
-
-    status = PyConfig_SetBytesString(&config, &config.program_name, pythonExe.c_str());
+    status = setPyConfigString(&config, &config.program_name, pythonExe.c_str());
     PyStatusExitOnError(status);
     
 
@@ -56,7 +65,7 @@ PythonInterpreter::PythonInterpreter(fs::path exePath, std::vector<fs::path> ext
     // home/bin/pythonMajor.Minor (executable)
     // home/lib/pythonMajor.Minor/site-packages (installed python modules)
     auto pythonHome = pythonDir;
-    status = PyConfig_SetBytesString(&config, &config.home, pythonHome.c_str());
+    status = setPyConfigString(&config, &config.home, pythonHome.c_str());
     PyStatusExitOnError(status);
     
     // Add external Python module search paths
@@ -71,7 +80,7 @@ PythonInterpreter::PythonInterpreter(fs::path exePath, std::vector<fs::path> ext
     const auto delim = ":";
 #endif
     std::copy(externalSearchPaths.begin(), externalSearchPaths.end(),std::ostream_iterator<std::string>(pyPath, delim));
-    status = PyConfig_SetBytesString(&config, &config.pythonpath_env, pyPath.str().c_str());
+    status = setPyConfigString(&config, &config.pythonpath_env, pyPath.str().c_str());
     PyStatusExitOnError(status);
 
     status = Py_InitializeFromConfig(&config);
