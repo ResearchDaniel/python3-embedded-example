@@ -79,7 +79,7 @@ PythonInterpreter::PythonInterpreter(fs::path exePath, std::vector<fs::path> ext
 #else
     const auto delim = ":";
 #endif
-    std::copy(externalSearchPaths.begin(), externalSearchPaths.end(),std::ostream_iterator<std::string>(pyPath, delim));
+    std::copy(externalSearchPaths.begin(), externalSearchPaths.end(),std::ostream_iterator<std::filesystem::path::string_type>(pyPath, delim));
     status = setPyConfigString(&config, &config.pythonpath_env, pyPath.str().c_str());
     PyStatusExitOnError(status);
 
