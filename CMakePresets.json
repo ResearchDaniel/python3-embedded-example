@@ -11,7 +11,7 @@
       }
     },
     {
-      "name": "msvc-dev-vcpkg",
+      "name": "msvc-vcpkg",
       "displayName": "MSVC 2022 VCPKG ",
       "description": "MSVC Development VCPKG configuration",
       "inherits": ["vcpkg"]
