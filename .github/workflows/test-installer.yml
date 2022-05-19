@@ -17,12 +17,12 @@ jobs:
         include:
           - os: 'windows-latest'
             installer: 'installer-win'
-            exe: 'bin/${{ github.event.repository.name }}'
+            exe: 'bin/${{ github.event.repository.name }}.exe'
           - os: 'macos-latest'
             installer: 'installer-macos'
             exe: '${{ github.event.repository.name }}.app/Contents/MacOS/${{ github.event.repository.name }}'
           - os: 'ubuntu-20.04'
-            installer: 'installer-linux'
+            installer: 'installer-ubuntu'
             exe: 'bin/${{ github.event.repository.name }}'
     runs-on: ${{ matrix.os }}
     steps:
@@ -38,7 +38,7 @@ jobs:
         # Find the name of the installer 
         ZIP=$(ls ${{ github.event.repository.name }}-*.zip)
         # Extract
-        tar zxvf "$ZIP"
+        unzip "$ZIP"
         # Get folder name and move into the folder 
-        cd "${ZIP%$.zip}"
+        cd "${ZIP%*.zip}"
         ./${{ matrix.exe }} 
