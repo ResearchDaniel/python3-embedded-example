@@ -69,18 +69,21 @@ PythonInterpreter::PythonInterpreter(fs::path exePath, std::vector<fs::path> ext
     PyStatusExitOnError(status);
     
     // Add external Python module search paths
-    std::stringstream pyPath;
+    std::basic_stringstream<fs::path::value_type> pyPath;
     // Different delimiters depending on OS
     // https://docs.python.org/3/c-api/init_config.html#c.PyConfig.pythonpath_env
-#ifdef __APPLE__
-    const auto delim = ":";
-#elif defined(_WIN32)
-    const auto delim = ";";
+#ifdef _WIN32
+    const auto delim = L";";
 #else
     const auto delim = ":";
 #endif
-    std::copy(externalSearchPaths.begin(), externalSearchPaths.end(),std::ostream_iterator<std::filesystem::path::string_type>(pyPath, delim));
-    status = setPyConfigString(&config, &config.pythonpath_env, pyPath.str().c_str());
+    if (!externalSearchPaths.empty()) {
+        for (const auto& path : externalSearchPaths) {
+            pyPath << path.string() << delim;
+        }
+        status = setPyConfigString(&config, &config.pythonpath_env, pyPath.str().c_str());
+    }
+
     PyStatusExitOnError(status);
 
     status = Py_InitializeFromConfig(&config);
@@ -94,7 +97,7 @@ PythonInterpreter::PythonInterpreter(fs::path exePath, std::vector<fs::path> ext
 
 fs::path PythonInterpreter::getPythonDir(fs::path exeDir) {
 #ifdef __APPLE__
-    auto pythonDir = exeDir / "../Resources/python";
+    auto pythonDir = exeDir.parent_path() / "Resources/python";
 #elif defined(_WIN32)
     auto pythonDir = exeDir / "python";
 #else
