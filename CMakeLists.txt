@@ -7,8 +7,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    add_definitions(-DDARWIN)
-
     # Set RPATH (relative path) differently depending on build-time and install/package.
     # At build time we use full paths to the generatated libraries.
     # When packaging, however, we must use relative paths so that the app 
@@ -31,7 +29,16 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     # which point to directories outside the build tree, to the install RPATH
     set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 elseif(UNIX)
-    set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+    # Use full RPATH for the build tree 
+    set(CMAKE_SKIP_BUILD_RPATH FALSE)
+
+    # Don't use the install RPATH when building 
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+    list(APPEND CMAKE_INSTALL_RPATH "$ORIGIN" "$ORIGIN/lib")
+    # Add the automatically determined parts of the RPATH,
+    # which point to directories outside the build tree, to the install RPATH
+    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 endif()
 
 # Setup install related paths
