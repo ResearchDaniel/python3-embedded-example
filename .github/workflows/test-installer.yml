@@ -57,7 +57,7 @@ jobs:
       shell: pwsh
       run: |
         $ZIP = (Get-ChildItem -Name ${{ github.event.repository.name }}-*.zip)
-        $folder = (Get-Item $ZIP).DirectoryName
+        $folder = (Get-Item $ZIP).BaseName
         echo $folder
         cd -Path "$folder"
         Get-ChildItem -Path *
