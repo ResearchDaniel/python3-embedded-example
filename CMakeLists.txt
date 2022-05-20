@@ -30,6 +30,8 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     # Add the automatically determined parts of the RPATH,
     # which point to directories outside the build tree, to the install RPATH
     set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+elseif(UNIX)
+    set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 endif()
 
 # Setup install related paths
