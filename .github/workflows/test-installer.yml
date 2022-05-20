@@ -58,5 +58,7 @@ jobs:
       run: |
         $ZIP = (Get-ChildItem -Name ${{ github.event.repository.name }}-*.zip)
         $folder = (Get-Item $ZIP).DirectoryName
+        echo $folder
         cd "$folder"
-        Invoke-expression ${{ matrix.exe }} 
+        Get-ChildItem -Path *
+        Invoke-expression "${{ matrix.exe }}"
