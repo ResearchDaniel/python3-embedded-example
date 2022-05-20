@@ -57,5 +57,6 @@ jobs:
       shell: pwsh
       run: |
         $ZIP = (Get-ChildItem -Name ${{ github.event.repository.name }}-*.zip)
-        cd (Get-Item $ZIP ).DirectoryName
+        $folder = (Get-Item $ZIP).DirectoryName
+        cd "$folder"
         Invoke-expression ${{ matrix.exe }} 
