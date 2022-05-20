@@ -39,17 +39,20 @@ jobs:
         ZIP=$(ls ${{ github.event.repository.name }}-*.zip)
         # Extract
         unzip "$ZIP"
-        # Get folder name and move into the folder 
-        cd "${ZIP%*.zip}"
+        # Set folder name variable to be used by next step
+        echo ::set-output name=app_folder::"${ZIP%*.zip}"
 
-    - name: Run application
+
+    - name: Run application (Linux|MacOS)
       if: runner.os == 'Linux' || runner.os == 'macOS'
       shell: bash
       run: |
+        cd ${{ steps.vars.outputs.app_folder }}
         ./${{ matrix.exe }} 
 
     - name: Run application (Windows)
       if: runner.os == 'Windows'
       shell: pwsh
       run: |
+        cd ${{ steps.vars.outputs.app_folder }}
         Invoke-expression ${{ matrix.exe }} 
