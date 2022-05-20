@@ -13,7 +13,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(PY_INSTALL_DIR "${RESOURCE_INSTALL_PREFIX}/python")
 else()
     set(PY_RUNTIME_DIR "$<TARGET_FILE_DIR:python3-embedded-app>/python")
-    set(PY_INSTALL_DIR "${RUNTIME_INSTALL_DIR}")
+    set(PY_INSTALL_DIR "${RUNTIME_INSTALL_DIR}/python")
 endif()
 
 

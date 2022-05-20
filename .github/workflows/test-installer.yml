@@ -41,4 +41,15 @@ jobs:
         unzip "$ZIP"
         # Get folder name and move into the folder 
         cd "${ZIP%*.zip}"
+
+    - name: Run application
+      if: runner.os == 'Linux' || runner.os == 'macOS'
+      shell: bash
+      run: |
         ./${{ matrix.exe }} 
+
+    - name: Run application (Windows)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: |
+        Invoke-expression ${{ matrix.exe }} 
