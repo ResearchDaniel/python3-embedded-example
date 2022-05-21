@@ -19,7 +19,8 @@ endif()
 
 message("Python_FOUND: ${Python3_FOUND}")
 message("Python_EXECUTABLE: ${Python3_EXECUTABLE}")
-message("PYTHON_STDLIB: ${Python3_STDLIB}")
+message("Python3_RUNTIME_LIBRARY_DIRS: ${Python3_RUNTIME_LIBRARY_DIRS}")
+message("Python3_STDLIB: ${Python3_STDLIB}")
 message("Python3_STDARCH: ${Python3_STDARCH}")
 message("Python ${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}")
 
