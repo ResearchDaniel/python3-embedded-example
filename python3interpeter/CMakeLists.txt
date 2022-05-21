@@ -20,9 +20,15 @@ endif()
 message("Python_FOUND: ${Python3_FOUND}")
 message("Python_EXECUTABLE: ${Python3_EXECUTABLE}")
 message("Python3_RUNTIME_LIBRARY_DIRS: ${Python3_RUNTIME_LIBRARY_DIRS}")
+message("Python3_RUNTIME_LIBRARY_RELEASE: ${Python3_RUNTIME_LIBRARY_RELEASE}")
+message("Python3_RUNTIME_LIBRARY_DEBUG: ${Python3_RUNTIME_LIBRARY_DEBUG}")
 message("Python3_STDLIB: ${Python3_STDLIB}")
 message("Python3_STDARCH: ${Python3_STDARCH}")
-message("Python ${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}")
+message("Python version: ${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}")
+get_target_property(py_imported_loc Python3::Python IMPORTED_LOCATION)
+message("Python IMPORTED_LOCATION: ${py_imported_loc}")
+get_target_property(py_imported_lib Python3::Python IMPORTED_IMPLIB)
+message("Python IMPORTED_IMPLIB: ${py_imported_lib}")
 
 # Add source files
 set(SOURCE_FILES
@@ -89,6 +95,19 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 # Setup files for packaging the installer 
 install(FILES ${PY_SCRIPTS} DESTINATION ${PY_INSTALL_DIR}/PyScripts)
 install(PROGRAMS ${Python3_EXECUTABLE} DESTINATION "${PY_INSTALL_DIR}/bin/.")
+if("${CMAKE_HOST_SYSTEM_NAME}" MATCHES "Windows")
+  install(
+    FILES "${Python3_RUNTIME_LIBRARY_RELEASE}"
+    DESTINATION ${PY_RUNTIME_DIR}/bin
+    CONFIGURATIONS Release;RelWithDebInfo;MinSizeRel
+  )
+  install(
+    FILES "${Python3_RUNTIME_LIBRARY_DEBUG}"
+    DESTINATION ${PY_RUNTIME_DIR}/bin
+    CONFIGURATIONS Debug
+  )
+endif()
+
 
 install(
     DIRECTORY ${Python3_STDLIB}
