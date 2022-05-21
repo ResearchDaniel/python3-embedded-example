@@ -36,7 +36,7 @@ elseif(UNIX)
     # Don't use the install RPATH when building 
     set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
     # Need to escape $ so that CMake does not treat it as a variable
-    list(APPEND CMAKE_INSTALL_RPATH "\\\$$ORIGIN" "\\\$$ORIGIN/lib")
+    list(APPEND CMAKE_INSTALL_RPATH "\\\$ORIGIN" "\\\$ORIGIN/lib")
     # Add the automatically determined parts of the RPATH,
     # which point to directories outside the build tree, to the install RPATH
     set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
