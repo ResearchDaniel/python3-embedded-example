@@ -20,7 +20,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     list(APPEND CMAKE_INSTALL_RPATH "@loader_path/" "@loader_path/../Frameworks")
 elseif("${CMAKE_HOST_SYSTEM_NAME}" MATCHES "Linux")
     # Need to escape $ so that CMake does not treat it as a variable
-    list(APPEND CMAKE_INSTALL_RPATH "\\\$ORIGIN" "\\\$ORIGIN/../lib")
+    list(APPEND CMAKE_INSTALL_RPATH "\$ORIGIN" "\$ORIGIN/../lib")
 elseif("${CMAKE_HOST_SYSTEM_NAME}" MATCHES "Windows")
     # Unused on Windows
 endif()
