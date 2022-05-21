@@ -35,7 +35,8 @@ elseif(UNIX)
 
     # Don't use the install RPATH when building 
     set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
-    list(APPEND CMAKE_INSTALL_RPATH "$ORIGIN" "$ORIGIN/lib")
+    # Need to escape $ so that CMake does not treat it as a variable
+    list(APPEND CMAKE_INSTALL_RPATH "\\\$$ORIGIN" "\\\$$ORIGIN/lib")
     # Add the automatically determined parts of the RPATH,
     # which point to directories outside the build tree, to the install RPATH
     set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
@@ -61,7 +62,7 @@ elseif(WIN32)
 else()
     set(RUNTIME_INSTALL_DIR bin)
     set(BUNDLE_INSTALL_DIR "not used!!!")
-    set(LIBRARY_INSTALL_DIR bin)
+    set(LIBRARY_INSTALL_DIR lib)
     set(ARCHIVE_INSTALL_DIR lib)
     set(FRAMEWORK_INSTALL_DIR "not used!!!")
     set(INCLUDE_INSTALL_DIR include)
