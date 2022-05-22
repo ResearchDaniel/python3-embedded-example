@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.21) # Require install(IMPORTED_RUNTIME_ARTIFACTS)
 project(python3-embedded-example)
 
 # Global configuration

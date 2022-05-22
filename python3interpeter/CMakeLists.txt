@@ -92,22 +92,21 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                    ${Python3_EXECUTABLE} "${PY_RUNTIME_DIR}/bin/${PYTHON_VER_NAME}")
 
 
-# Setup files for packaging the installer 
-install(FILES ${PY_SCRIPTS} DESTINATION ${PY_INSTALL_DIR}/PyScripts)
-install(PROGRAMS ${Python3_EXECUTABLE} DESTINATION "${PY_INSTALL_DIR}/bin/.")
-if("${CMAKE_HOST_SYSTEM_NAME}" MATCHES "Windows")
-  install(
-    FILES "${Python3_RUNTIME_LIBRARY_RELEASE}"
-    DESTINATION "${PY_RUNTIME_DIR}/bin/."
-    CONFIGURATIONS Release;RelWithDebInfo;MinSizeRel
-  )
-  install(
-    FILES "${Python3_RUNTIME_LIBRARY_DEBUG}"
-    DESTINATION "${PY_RUNTIME_DIR}/bin/."
-    CONFIGURATIONS Debug
-  )
-endif()
+##### Setup files for packaging the installer ####
 
+# Installs Python3_EXECUTABLE and its dependent runtime libraries 
+install(IMPORTED_RUNTIME_ARTIFACTS Python3::Interpreter
+    RUNTIME        # DLLs, Exes, 
+    DESTINATION ${PY_RUNTIME_DIR}/bin
+    BUNDLE         # Targets marked as BUNDLE
+    DESTINATION ${BUNDLE_INSTALL_DIR}
+    LIBRARY        # Shared libs - DLLs   
+    DESTINATION ${PY_RUNTIME_DIR}/bin
+    FRAMEWORK      # Targets marked as FRAMEWORK
+    DESTINATION ${FRAMEWORK_INSTALL_DIR}
+)
+
+install(FILES ${PY_SCRIPTS} DESTINATION ${PY_INSTALL_DIR}/PyScripts)
 
 install(
     DIRECTORY ${Python3_STDLIB}
