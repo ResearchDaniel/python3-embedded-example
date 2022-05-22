@@ -98,12 +98,12 @@ install(PROGRAMS ${Python3_EXECUTABLE} DESTINATION "${PY_INSTALL_DIR}/bin/.")
 if("${CMAKE_HOST_SYSTEM_NAME}" MATCHES "Windows")
   install(
     FILES "${Python3_RUNTIME_LIBRARY_RELEASE}"
-    DESTINATION ${PY_RUNTIME_DIR}/bin
+    DESTINATION "${PY_RUNTIME_DIR}/bin/."
     CONFIGURATIONS Release;RelWithDebInfo;MinSizeRel
   )
   install(
     FILES "${Python3_RUNTIME_LIBRARY_DEBUG}"
-    DESTINATION ${PY_RUNTIME_DIR}/bin
+    DESTINATION "${PY_RUNTIME_DIR}/bin/."
     CONFIGURATIONS Debug
   )
 endif()
