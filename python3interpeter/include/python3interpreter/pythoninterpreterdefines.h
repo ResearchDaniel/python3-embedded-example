@@ -1,8 +1,8 @@
 #pragma once
 
-#ifdef EXPORTING_PYTHON_INTERPRETER  // DYNAMIC
+#ifdef BUILD_SHARED_LIBS  // DYNAMIC
 // If we are building DLL files we must declare dllexport/dllimport
-#ifdef PYTHON_INTERPRETER_EXPORTS
+#ifdef python3_interpeter_EXPORTS
 #ifdef _WIN32
 #define PYTHON_INTERPRETER_API __declspec(dllexport)
 #else  // UNIX (GCC)

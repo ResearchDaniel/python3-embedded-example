@@ -23,6 +23,14 @@ public:
      * Return root folder containing Python:
      * root/bin
      * root/lib
+     * @param exePath Path to the main executable
      */
     static fs::path getPythonDir(fs::path exeDir);
+
+    /*
+     * Return path to Python executable.
+     * @param pythonDir Path to folder containing Python
+     */
+    static fs::path getPythonExe(fs::path pythonDir);
+   
 };

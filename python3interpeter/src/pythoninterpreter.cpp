@@ -53,17 +53,18 @@ PythonInterpreter::PythonInterpreter(fs::path exePath, std::vector<fs::path> ext
     auto exeDir = exePath.parent_path();
     auto pythonDir = getPythonDir(exeDir);
     
-    std::stringstream pyVer;
-    pyVer << "python" << PYTHON_VERSION_MAJOR << "." << PYTHON_VERSION_MINOR;
-    auto pythonExe = pythonDir / "bin" / fs::path(pyVer.str());
+    auto pythonExe = getPythonExe(pythonDir);
     status = setPyConfigString(&config, &config.program_name, pythonExe.c_str());
     PyStatusExitOnError(status);
     
 
     // Python will search for modules relative to the home directory.
-    // For example:
+    // On Mac/Linux:
     // home/bin/pythonMajor.Minor (executable)
     // home/lib/pythonMajor.Minor/site-packages (installed python modules)
+    // On Windows:
+    // home/
+    // home/Lib/site-packages
     auto pythonHome = pythonDir;
     status = setPyConfigString(&config, &config.home, pythonHome.c_str());
     PyStatusExitOnError(status);
@@ -102,6 +103,17 @@ fs::path PythonInterpreter::getPythonDir(fs::path exeDir) {
     auto pythonDir = exeDir / "python";
 #endif
     return pythonDir;
+}
+
+fs::path PythonInterpreter::getPythonExe(fs::path pythonDir) {
+#if defined(_WIN32)
+    auto pythonExe = pythonDir / "python.exe";
+#else
+    std::stringstream pyVer;
+    pyVer << "python" << PYTHON_VERSION_MAJOR << "." << PYTHON_VERSION_MINOR;
+    auto pythonExe = pythonDir / "bin" / fs::path(pyVer.str());
+#endif
+    return pythonExe;
 }
 
 PythonInterpreter::~PythonInterpreter() {
